@@ -16,9 +16,10 @@
     --gold: #c9a84c;
     --gold-light: #e2c97e;
     --gold-pale: #f0e2b8;
-    --green-deep: #1a3025;
-    --green-mid: #2d5040;
-    --green-accent: #3d6b55;
+    --purple-deep: #1a0d2e;
+    --purple-mid: #2d1a4a;
+    --purple-accent: #6b3fa0;
+    --purple-light: #9b6fd4;
     --white: #f8f5f0;
     --white-2: #ede9e2;
     --gray: #888880;
@@ -110,9 +111,9 @@
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(ellipse at 70% 40%, rgba(29,80,48,0.25) 0%, transparent 60%),
+      radial-gradient(ellipse at 70% 40%, rgba(107,63,160,0.28) 0%, transparent 60%),
       radial-gradient(ellipse at 20% 80%, rgba(201,168,76,0.08) 0%, transparent 50%),
-      linear-gradient(160deg, #0a0a0a 0%, #111111 50%, #0d1a12 100%);
+      linear-gradient(160deg, #0a0a0a 0%, #111111 50%, #0d0a14 100%);
   }
 
   .hero-grid-overlay {
@@ -314,11 +315,11 @@
   .service-card:hover { background: var(--dark-3); }
 
   .service-card.featured {
-    background: var(--green-deep);
+    background: var(--purple-deep);
     border: 1px solid rgba(201,168,76,0.3);
   }
 
-  .service-card.featured:hover { background: var(--green-mid); }
+  .service-card.featured:hover { background: var(--purple-mid); }
 
   .service-badge {
     font-family: 'Barlow Condensed', sans-serif;
@@ -403,7 +404,7 @@
   .about-visual {
     position: relative;
     aspect-ratio: 4/5;
-    background: var(--green-deep);
+    background: var(--purple-deep);
     overflow: hidden;
   }
 
@@ -413,7 +414,7 @@
     inset: 0;
     background:
       radial-gradient(ellipse at 30% 70%, rgba(201,168,76,0.1) 0%, transparent 60%),
-      linear-gradient(135deg, var(--green-deep) 0%, #0a1a10 100%);
+      linear-gradient(135deg, var(--purple-deep) 0%, #0a0514 100%);
   }
 
   .about-visual-inner {
@@ -477,7 +478,7 @@
     width: 36px;
     height: 36px;
     flex-shrink: 0;
-    background: rgba(201,168,76,0.1);
+    background: rgba(107,63,160,0.15);
     border: 1px solid rgba(201,168,76,0.25);
     display: flex;
     align-items: center;
@@ -508,7 +509,6 @@
     text-align: center;
   }
 
-  #membership .section-label, #membership .section-label::before { margin-left: auto; margin-right: auto; }
   #membership .section-label { justify-content: center; }
   #membership .section-title { text-align: center; }
   #membership .section-desc { text-align: center; margin-left: auto; margin-right: auto; }
@@ -534,11 +534,11 @@
   .plan-card:hover { border-color: rgba(201,168,76,0.35); background: var(--dark-3); }
 
   .plan-card.featured-plan {
-    background: var(--green-deep);
+    background: var(--purple-deep);
     border-color: rgba(201,168,76,0.4);
   }
 
-  .plan-card.featured-plan:hover { background: var(--green-mid); }
+  .plan-card.featured-plan:hover { background: var(--purple-mid); }
 
   .plan-name {
     font-family: 'Playfair Display', serif;
@@ -631,7 +631,7 @@
     transition: background 0.2s;
   }
 
-  .addon-item:hover { background: var(--green-deep); }
+  .addon-item:hover { background: var(--purple-deep); }
 
   .addon-icon {
     font-size: 1.3rem;
@@ -759,7 +759,7 @@
     width: 38px;
     height: 38px;
     flex-shrink: 0;
-    background: rgba(201,168,76,0.08);
+    background: rgba(107,63,160,0.12);
     border: 1px solid rgba(201,168,76,0.2);
     display: flex;
     align-items: center;
@@ -871,7 +871,7 @@
 
   /* PROCESS STRIP */
   #process {
-    background: var(--green-deep);
+    background: var(--purple-deep);
     padding: 4rem;
   }
 
@@ -992,7 +992,6 @@
   <p class="section-desc">Three tiers of service built around your vehicle's needs — from routine maintenance to a complete transformation.</p>
 
   <div class="services-grid">
-    <!-- Renewal -->
     <div class="service-card">
       <div class="service-tier">Tier 01</div>
       <div class="service-name">Renewal</div>
@@ -1008,7 +1007,6 @@
       </ul>
     </div>
 
-    <!-- Restored -->
     <div class="service-card featured">
       <div class="service-badge">Most Popular</div>
       <div class="service-tier">Tier 02</div>
@@ -1025,7 +1023,6 @@
       </ul>
     </div>
 
-    <!-- Reclaimed -->
     <div class="service-card">
       <div class="service-tier">Tier 03</div>
       <div class="service-name">Reclaimed</div>
@@ -1203,7 +1200,7 @@
         <div class="contact-detail-icon">📍</div>
         <div class="contact-detail-text">
           <strong>Service Area</strong>
-          <p>Montgomey, Alabama & surrounding areas</p>
+          <p>Montgomery, Alabama & surrounding areas</p>
         </div>
       </div>
       <div class="contact-detail">
@@ -1223,47 +1220,48 @@
     </div>
 
     <div class="social-links">
-      <a href="#" class="social-link">Instagram</a>
-      <a href="#" class="social-link">Facebook</a>
-      <a href="#" class="social-link">TikTok</a>
-      <a href="#" class="social-link">Google Reviews</a>
+      <a href="https://www.instagram.com/reclaimeddetailers" target="_blank" rel="noopener" class="social-link">Instagram</a>
+      <a href="https://www.facebook.com/reclaimeddetailers" target="_blank" rel="noopener" class="social-link">Facebook</a>
+      <a href="https://www.tiktok.com/@reclaimeddetailers" target="_blank" rel="noopener" class="social-link">TikTok</a>
+      <a href="https://search.google.com/local/writereview?placeid=ChIJN1t_tDeuEmsRUsdiY1GsDjY" target="_blank" rel="noopener" class="social-link">Leave a Review</a>
     </div>
   </div>
+
   <div>
-<form 
-  class="contact-form"
-  action="https://formsubmit.co/reclaimeddetailers@outlook.com"
-  method="POST"
->
-<input type="hidden" name="_captcha" value="false">
-<input type="hidden" name="_subject" value="New Reclaimed Detailers Booking Request">
-<input type="hidden" name="_template" value="table">
-<input type="hidden" name="_next" value="https://yourwebsite.com/thankyou.html">
+    <form
+      class="contact-form"
+      action="https://formsubmit.co/reclaimeddetailers@outlook.com"
+      method="POST"
+    >
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_subject" value="New Reclaimed Detailers Booking Request">
+      <input type="hidden" name="_template" value="table">
+
       <div class="form-row">
         <div class="form-group">
-          <label>First Name</label>
-          <input type="text" placeholder="First Name" required>
+          <label for="first_name">First Name</label>
+          <input type="text" id="first_name" name="First Name" placeholder="First Name" required>
         </div>
         <div class="form-group">
-          <label>Last Name</label>
-          <input type="text" placeholder="Last Name" required>
+          <label for="last_name">Last Name</label>
+          <input type="text" id="last_name" name="Last Name" placeholder="Last Name" required>
         </div>
       </div>
       <div class="form-group">
-        <label>Phone Number</label>
-        <input type="tel" placeholder="Phone Number">
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" name="Phone Number" placeholder="Phone Number">
       </div>
       <div class="form-group">
-        <label>Email Address</label>
-        <input type="email" placeholder="Email Address" required>
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="Email Address" placeholder="Email Address" required>
       </div>
       <div class="form-group">
-        <label>Vehicle (Year, Make, Model)</label>
-        <input type="text" placeholder="e.g. 2021 Ford F-150">
+        <label for="vehicle">Vehicle (Year, Make, Model)</label>
+        <input type="text" id="vehicle" name="Vehicle" placeholder="e.g. 2021 Ford F-150">
       </div>
       <div class="form-group">
-        <label>Service Requested</label>
-          <select name="Service Requested">
+        <label for="service">Service Requested</label>
+        <select id="service" name="Service Requested">
           <option value="">Select a package...</option>
           <option>Renewal — Maintenance Detail ($80+)</option>
           <option>Restored — Deep Clean ($150+)</option>
@@ -1273,8 +1271,9 @@
         </select>
       </div>
       <div class="form-group">
-        <label>Additional Notes</label>
-        <textarea 
+        <label for="notes">Additional Notes</label>
+        <textarea
+          id="notes"
           name="Additional Notes"
           placeholder="Tell us about your vehicle's condition or any specific concerns..."
         ></textarea>
@@ -1299,7 +1298,8 @@
   <p class="footer-copy">© 2025 Reclaimed Detailers LLC · Montgomery, AL</p>
 </footer>
 
-  // Subtle nav scroll effect
+<script>
+  // Nav scroll effect
   window.addEventListener('scroll', () => {
     const nav = document.querySelector('nav');
     nav.style.padding = window.scrollY > 60
