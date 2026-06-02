@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Memberships | Reclaimed Detailers</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --purple: #7b35c4;
+    --purple-brand: #9b5ce4;
+    --purple-light: #b07de8;
+    --purple-ring: rgba(123,53,196,0.6);
+    --gold: #b8922a;
+    --gold-light: #d4aa4a;
+    --silver: #c8c8d0;
+    --transition: background 0.35s ease, color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+  }
+
+  [data-theme="light"] {
+    --bg: #f4f2ef; --bg-2: #ede9e4; --bg-card: #ffffff; --bg-card-2: #f8f6f3;
+    --text: #1c1a18; --text-2: #3a3830; --text-muted: #6a6860; --text-dim: #9a9890;
+    --border: rgba(0,0,0,0.08); --border-gold: rgba(184,146,42,0.35);
+    --shadow: 0 2px 16px rgba(0,0,0,0.08); --nav-bg: rgba(244,242,239,0.96);
+    --section-alt: #ede9e4; --purple-section: #1a1020; --purple-section-text: #f4f2ef;
+  }
+  [data-theme="dark"] {
+    --bg: #080808; --bg-2: #0f0f0f; --bg-card: #161616; --bg-card-2: #1e1e1e;
+    --text: #f5f3f0; --text-2: #eae7e2; --text-muted: #b0ada6; --text-dim: #808078;
+    --border: rgba(255,255,255,0.07); --border-gold: rgba(184,146,42,0.25);
+    --shadow: 0 2px 24px rgba(0,0,0,0.4); --nav-bg: rgba(8,8,8,0.96);
+    --section-alt: #0f0f0f; --purple-section: #130a22; --purple-section-text: #f5f3f0;
+  }
+
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Barlow', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; transition: var(--transition); }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    background: var(--nav-bg); backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border-gold);
+    height: 68px; display: flex; align-items: center;
+    padding: 0 2rem; gap: 1.5rem; transition: var(--transition);
+  }
+  .page-indicator { position: fixed; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--purple), var(--gold)); z-index: 300; transform-origin: left; transform: scaleX(0); transition: transform 0.1s linear; }
+  .hamburger { background: none; border: 1px solid var(--border); border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; gap: 5px; transition: var(--transition); }
+  .hamburger:hover { background: var(--border); }
+  .hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: transform 0.3s ease, opacity 0.3s ease; }
+  .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  .nav-logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
+  .nav-logo-text { display: flex; flex-direction: column; }
+  .nav-logo-text .brand { font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 700; letter-spacing: 0.1em; color: var(--purple); line-height: 1; }
+  .nav-logo-text .sub { font-size: 0.62rem; letter-spacing: 0.18em; color: var(--gold); text-transform: uppercase; line-height: 1; margin-top: 2px; }
+  .nav-links { display: flex; gap: 2rem; list-style: none; margin-left: auto; align-items: center; }
+  .nav-links a { text-decoration: none; color: var(--text-muted); font-size: 0.88rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; position: relative; transition: color 0.2s; }
+  .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: var(--purple); transition: width 0.3s ease; }
+  .nav-links a:hover, .nav-links a.active { color: var(--purple); }
+  .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+  .theme-toggle { margin-left: 1rem; background: none; border: 1px solid var(--border-gold); border-radius: 20px; padding: 6px 14px; cursor: pointer; font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px; transition: var(--transition); }
+  .theme-toggle:hover { border-color: var(--purple); color: var(--purple); }
+
+  /* ── SIDEBAR ── */
+  .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 300; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+  .sidebar-overlay.open { opacity: 1; pointer-events: all; }
+  .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 300px; background: var(--bg-card); z-index: 400; transform: translateX(-100%); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); display: flex; flex-direction: column; border-right: 1px solid var(--border-gold); }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-header { padding: 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .sidebar-logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
+  .sidebar-logo-name { font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 700; letter-spacing: 0.1em; color: var(--purple); }
+  .sidebar-logo-sub { font-size: 0.6rem; color: var(--gold); letter-spacing: 0.15em; text-transform: uppercase; }
+  .sidebar-close { background: none; border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; cursor: pointer; color: var(--text-muted); font-size: 1.1rem; transition: var(--transition); }
+  .sidebar-close:hover { background: var(--border); color: var(--text); }
+  .sidebar-section-label { padding: 1.25rem 1.5rem 0.5rem; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-dim); }
+  .sidebar-nav { flex: 1; overflow-y: auto; padding-bottom: 1.5rem; }
+  .sidebar-nav a { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1.5rem; text-decoration: none; color: var(--text-muted); font-size: 0.9rem; font-weight: 500; transition: all 0.2s; }
+  .sidebar-nav a .nav-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-dim); transition: all 0.2s; flex-shrink: 0; }
+  .sidebar-nav a:hover { color: var(--text); background: var(--border); }
+  .sidebar-nav a.active-page { color: var(--purple); background: rgba(123,53,196,0.08); border-left: 3px solid var(--purple); padding-left: calc(1.5rem - 3px); font-weight: 600; }
+  .sidebar-nav a.active-page .nav-dot { background: var(--purple); transform: scale(1.4); }
+  .sidebar-divider { height: 1px; background: var(--border); margin: 0.5rem 1.5rem; }
+  .sidebar-footer { padding: 1.25rem 1.5rem; border-top: 1px solid var(--border); font-size: 0.78rem; color: var(--text-dim); }
+  .sidebar-contact-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.3rem 0; text-decoration: none; color: var(--text-dim); transition: color 0.2s; }
+  .sidebar-contact-item:hover { color: var(--purple); }
+
+  /* ── PAGE HERO ── */
+  .page-hero { padding: 140px 2rem 60px; background: var(--purple-section); text-align: center; }
+  .page-hero .breadcrumb { font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; }
+  .page-hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.2rem, 5vw, 3.5rem); color: #fff; margin-bottom: 0.75rem; }
+  .page-hero p { color: rgba(255,255,255,0.65); max-width: 540px; margin: 0 auto; line-height: 1.7; }
+
+  /* ── SECTION STYLES ── */
+  section { padding: 80px 2rem; }
+  .container { max-width: 1100px; margin: 0 auto; }
+  .section-label { font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); font-weight: 700; margin-bottom: 0.75rem; }
+  .section-title { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 4vw, 2.6rem); color: var(--text); margin-bottom: 1.25rem; line-height: 1.2; }
+  .section-sub { color: var(--text-muted); line-height: 1.75; max-width: 600px; }
+
+  /* ── AUTH PANEL ── */
+  .auth-section { background: var(--bg); }
+  .auth-panel { max-width: 480px; margin: 0 auto; background: var(--bg-card); border: 1px solid var(--border-gold); border-radius: 16px; padding: 2.5rem; box-shadow: var(--shadow); }
+  .auth-tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 2rem; }
+  .auth-tab { flex: 1; padding: 0.75rem; background: none; border: none; cursor: pointer; font-family: 'Barlow', sans-serif; font-size: 0.95rem; font-weight: 600; color: var(--text-muted); letter-spacing: 0.04em; border-bottom: 2px solid transparent; transition: all 0.2s; margin-bottom: -1px; }
+  .auth-tab.active { color: var(--purple); border-bottom-color: var(--purple); }
+  .auth-tab:hover:not(.active) { color: var(--text); }
+  .auth-form { display: none; flex-direction: column; gap: 1.25rem; }
+  .auth-form.active { display: flex; }
+  .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+  .form-group label { font-size: 0.82rem; font-weight: 600; letter-spacing: 0.05em; color: var(--text-muted); text-transform: uppercase; }
+  .form-group input, .form-group select { padding: 0.8rem 1rem; background: var(--bg-2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'Barlow', sans-serif; font-size: 0.95rem; transition: border-color 0.2s; outline: none; }
+  .form-group input:focus, .form-group select:focus { border-color: var(--purple); }
+  .btn-primary { padding: 0.9rem 2rem; background: var(--purple); color: #fff; border: none; border-radius: 8px; font-family: 'Barlow', sans-serif; font-size: 0.95rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; transition: background 0.2s, transform 0.15s; }
+  .btn-primary:hover { background: var(--purple-brand); transform: translateY(-1px); }
+  .auth-message { font-size: 0.85rem; color: var(--text-dim); text-align: center; }
+  .auth-error { background: rgba(220,50,50,0.1); border: 1px solid rgba(220,50,50,0.3); border-radius: 8px; padding: 0.75rem 1rem; color: #e05050; font-size: 0.88rem; display: none; }
+  .auth-error.show { display: block; }
+
+  /* ── DASHBOARD ── */
+  .dashboard-section { background: var(--bg); display: none; }
+  .dashboard-section.visible { display: block; }
+  .dash-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 2.5rem; }
+  .dash-welcome { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--text); }
+  .dash-welcome span { color: var(--purple); }
+  .btn-outline { padding: 0.6rem 1.4rem; background: none; border: 1px solid var(--border-gold); border-radius: 8px; color: var(--text-muted); font-family: 'Barlow', sans-serif; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.05em; cursor: pointer; transition: all 0.2s; }
+  .btn-outline:hover { border-color: var(--purple); color: var(--purple); }
+  .dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+  .dash-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; }
+  .dash-card-label { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 0.5rem; }
+  .dash-card-value { font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 700; color: var(--text); }
+  .dash-card-value .unit { font-size: 1rem; color: var(--text-muted); margin-left: 0.25rem; }
+  .dash-card-sub { font-size: 0.82rem; color: var(--text-dim); margin-top: 0.4rem; }
+  .plan-badge { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.4rem 1rem; background: rgba(123,53,196,0.12); border: 1px solid rgba(123,53,196,0.3); border-radius: 20px; color: var(--purple); font-size: 0.85rem; font-weight: 700; letter-spacing: 0.05em; }
+  .no-plan-msg { text-align: center; padding: 2rem; color: var(--text-muted); border: 1px dashed var(--border-gold); border-radius: 12px; }
+
+  /* ── PLAN CARDS ── */
+  .plans-section { background: var(--section-alt); }
+  .plans-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 3rem; }
+  .plan-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 2.5rem 2rem; position: relative; transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; display: flex; flex-direction: column; }
+  .plan-card:hover { transform: translateY(-6px); box-shadow: 0 20px 60px rgba(0,0,0,0.12); }
+  .plan-card.featured { border-color: var(--purple); box-shadow: 0 8px 40px rgba(123,53,196,0.2); }
+  .plan-card.featured:hover { box-shadow: 0 20px 60px rgba(123,53,196,0.3); }
+  .plan-badge-top { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: var(--purple); color: #fff; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; padding: 4px 16px; border-radius: 20px; white-space: nowrap; }
+  .plan-tier { font-size: 0.7rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); font-weight: 700; margin-bottom: 0.75rem; }
+  .plan-name { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--text); margin-bottom: 0.25rem; }
+  .plan-price { display: flex; align-items: baseline; gap: 0.25rem; margin: 1rem 0; }
+  .plan-price .amount { font-family: 'Barlow Condensed', sans-serif; font-size: 3rem; font-weight: 700; color: var(--purple); }
+  .plan-price .period { font-size: 0.9rem; color: var(--text-muted); }
+  .plan-tagline { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.5; }
+  .plan-divider { height: 1px; background: var(--border-gold); margin: 1.5rem 0; }
+  .plan-features { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; flex: 1; margin-bottom: 2rem; }
+  .plan-features li { display: flex; align-items: flex-start; gap: 0.75rem; font-size: 0.9rem; color: var(--text-2); line-height: 1.4; }
+  .plan-features li::before { content: '✓'; color: var(--gold); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+  .plan-features li.note { color: var(--text-muted); font-size: 0.82rem; font-style: italic; }
+  .plan-features li.note::before { content: '★'; color: var(--purple); }
+  .plan-cta { width: 100%; padding: 1rem; border-radius: 10px; font-family: 'Barlow', sans-serif; font-size: 0.95rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; border: 2px solid var(--purple); }
+  .plan-cta.filled { background: var(--purple); color: #fff; }
+  .plan-cta.filled:hover { background: var(--purple-brand); }
+  .plan-cta.outline { background: none; color: var(--purple); }
+  .plan-cta.outline:hover { background: var(--purple); color: #fff; }
+  .plan-cta.current-plan { background: rgba(184,146,42,0.15); border-color: var(--gold); color: var(--gold); cursor: default; }
+
+  /* ── CERAMIC NOTICE ── */
+  .ceramic-notice { background: rgba(123,53,196,0.06); border: 1px solid rgba(123,53,196,0.2); border-radius: 12px; padding: 1.5rem; margin: 2rem 0 0; display: flex; gap: 1rem; align-items: flex-start; }
+  .ceramic-notice .icon { font-size: 1.5rem; flex-shrink: 0; }
+  .ceramic-notice h4 { font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 700; letter-spacing: 0.08em; color: var(--purple); margin-bottom: 0.4rem; text-transform: uppercase; }
+  .ceramic-notice p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; }
+
+  /* ── FAQ ── */
+  .faq-section { background: var(--bg); }
+  .faq-list { margin-top: 2.5rem; display: flex; flex-direction: column; gap: 1rem; }
+  .faq-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .faq-question { padding: 1.25rem 1.5rem; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 600; color: var(--text); transition: background 0.2s; }
+  .faq-question:hover { background: var(--border); }
+  .faq-question .chevron { color: var(--purple); transition: transform 0.3s; font-size: 1.1rem; }
+  .faq-item.open .faq-question .chevron { transform: rotate(180deg); }
+  .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+  .faq-item.open .faq-answer { max-height: 400px; }
+  .faq-answer p { padding: 0 1.5rem 1.25rem; color: var(--text-muted); line-height: 1.7; font-size: 0.93rem; }
+
+  /* ── FOOTER ── */
+  footer { background: var(--purple-section); color: var(--purple-section-text); padding: 3rem 2rem; text-align: center; }
+  .footer-logo { font-family: 'Barlow Condensed', sans-serif; font-size: 1.4rem; font-weight: 700; letter-spacing: 0.12em; color: #fff; margin-bottom: 0.5rem; }
+  .footer-tagline { font-size: 0.8rem; letter-spacing: 0.18em; color: var(--gold); text-transform: uppercase; margin-bottom: 1.5rem; }
+  .footer-links { display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: center; margin-bottom: 1.5rem; }
+  .footer-links a { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
+  .footer-links a:hover { color: #fff; }
+  .footer-copy { font-size: 0.78rem; color: rgba(255,255,255,0.35); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .plans-grid { grid-template-columns: 1fr; }
+    .plan-card.featured { margin-top: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Scroll Progress -->
+<div class="page-indicator" id="page-indicator"></div>
+
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <a href="index.html" class="sidebar-logo" onclick="closeSidebar()">
+      <svg width="36" height="36" viewBox="0 0 80 80" fill="none">
+        <circle cx="40" cy="40" r="38" fill="#1a1020" stroke="#7b35c4" stroke-width="3"/>
+        <polygon points="40,10 48,28 68,28 53,40 59,58 40,46 21,58 27,40 12,28 32,28" fill="none" stroke="#b8922a" stroke-width="1.5" opacity="0.7"/>
+        <text x="40" y="47" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-size="16" font-weight="700" fill="#9b5ce4" letter-spacing="2">RD</text>
+      </svg>
+      <div><div class="sidebar-logo-name">RECLAIMED</div><div class="sidebar-logo-sub">Detailers</div></div>
+    </a>
+    <button class="sidebar-close" onclick="closeSidebar()">✕</button>
+  </div>
+  <div class="sidebar-section-label">Navigation</div>
+  <nav class="sidebar-nav">
+    <a href="index.html"><span class="nav-dot"></span> Home</a>
+    <a href="about.html"><span class="nav-dot"></span> About Us</a>
+    <a href="showcase.html"><span class="nav-dot"></span> 3D Showcase</a>
+    <a href="membership.html" class="active-page"><span class="nav-dot"></span> Memberships</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="tel:3346401831" class="sidebar-contact-item">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 11.6a19.79 19.79 0 01-3.07-8.68A2 2 0 012 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+      <span>(334) 640-1831</span>
+    </a>
+    <a href="mailto:reclaimeddetailers@outlook.com" class="sidebar-contact-item">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      <span>reclaimeddetailers@outlook.com</span>
+    </a>
+  </div>
+</aside>
+
+<!-- Nav -->
+<nav>
+  <button class="hamburger" id="hamburger" onclick="toggleSidebar()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <a href="index.html" class="nav-logo">
+    <svg width="36" height="36" viewBox="0 0 80 80" fill="none">
+      <circle cx="40" cy="40" r="38" fill="#1a1020" stroke="#7b35c4" stroke-width="3"/>
+      <polygon points="40,10 48,28 68,28 53,40 59,58 40,46 21,58 27,40 12,28 32,28" fill="none" stroke="#b8922a" stroke-width="1.5" opacity="0.7"/>
+      <text x="40" y="47" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-size="16" font-weight="700" fill="#9b5ce4" letter-spacing="2">RD</text>
+    </svg>
+    <div class="nav-logo-text">
+      <span class="brand">RECLAIMED</span>
+      <span class="sub">Detailers</span>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About Us</a></li>
+    <li><a href="showcase.html">3D Showcase</a></li>
+    <li><a href="membership.html" class="active">Memberships</a></li>
+  </ul>
+  <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()">
+    <span id="theme-icon">☀️</span> <span id="theme-label">Light</span>
+  </button>
+</nav>
+
+<!-- Page Hero -->
+<div class="page-hero">
+  <div class="breadcrumb">Reclaimed Detailers &nbsp;/&nbsp; Memberships</div>
+  <h1>Member Plans</h1>
+  <p>Choose the plan that fits your lifestyle. Monthly auto detailing delivered to you — with faith, excellence, and care.</p>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     AUTH SECTION (shown when logged out)
+════════════════════════════════════════════ -->
+<section class="auth-section" id="auth-section">
+  <div class="container">
+    <div style="text-align:center; margin-bottom:2.5rem;">
+      <div class="section-label">Member Portal</div>
+      <h2 class="section-title">Sign In or Create an Account</h2>
+      <p class="section-sub" style="margin: 0 auto;">Manage your subscription, view upcoming appointments, and track your detailing history all in one place.</p>
+    </div>
+    <div class="auth-panel">
+      <div class="auth-tabs">
+        <button class="auth-tab active" onclick="switchTab('login')">Sign In</button>
+        <button class="auth-tab" onclick="switchTab('register')">Create Account</button>
+      </div>
+
+      <!-- Login Form -->
+      <form class="auth-form active" id="login-form" onsubmit="handleLogin(event)">
+        <div class="auth-error" id="login-error"></div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="login-email" placeholder="you@example.com" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="login-password" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn-primary">Sign In &rarr;</button>
+        <p class="auth-message">New here? <a href="#" onclick="switchTab('register'); return false;" style="color:var(--purple);">Create a free account</a></p>
+      </form>
+
+      <!-- Register Form -->
+      <form class="auth-form" id="register-form" onsubmit="handleRegister(event)">
+        <div class="auth-error" id="register-error"></div>
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="reg-name" placeholder="Ray Compton" required>
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="reg-email" placeholder="you@example.com" required>
+        </div>
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="tel" id="reg-phone" placeholder="(334) 000-0000">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="reg-password" placeholder="Min. 6 characters" minlength="6" required>
+        </div>
+        <button type="submit" class="btn-primary">Create Account &rarr;</button>
+        <p class="auth-message">Already have an account? <a href="#" onclick="switchTab('login'); return false;" style="color:var(--purple);">Sign in</a></p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     DASHBOARD (shown when logged in)
+════════════════════════════════════════════ -->
+<section class="dashboard-section" id="dashboard-section">
+  <div class="container">
+    <div class="dash-header">
+      <div>
+        <div class="section-label">Member Portal</div>
+        <div class="dash-welcome">Welcome back, <span id="dash-name">Member</span></div>
+      </div>
+      <button class="btn-outline" onclick="handleLogout()">Sign Out</button>
+    </div>
+
+    <!-- Status Cards -->
+    <div class="dash-grid">
+      <div class="dash-card">
+        <div class="dash-card-label">Current Plan</div>
+        <div id="dash-plan-badge" class="plan-badge">No Active Plan</div>
+        <div class="dash-card-sub" id="dash-plan-sub">Browse plans below to get started.</div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-label">Details Remaining</div>
+        <div class="dash-card-value" id="dash-details-remaining">—<span class="unit"></span></div>
+        <div class="dash-card-sub">Resets each billing cycle</div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-label">Member Since</div>
+        <div class="dash-card-value" id="dash-since" style="font-size:1.4rem;">—</div>
+        <div class="dash-card-sub">Thank you for trusting us</div>
+      </div>
+    </div>
+
+    <div id="dash-no-plan" class="no-plan-msg">
+      <p style="margin-bottom:0.5rem; font-weight:600; color:var(--text);">No active membership</p>
+      <p>Select a plan below to get started with your monthly detailing routine.</p>
+    </div>
+
+    <div id="dash-manage" style="display:none; margin-top:1.5rem; padding:1.5rem; background:var(--bg-card); border:1px solid var(--border-gold); border-radius:12px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem;">
+        <div>
+          <div style="font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); font-weight:700; margin-bottom:0.3rem;">Manage Subscription</div>
+          <div id="manage-plan-name" style="font-family:'Playfair Display',serif; font-size:1.2rem; color:var(--text);"></div>
+        </div>
+        <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+          <button class="btn-outline" onclick="scrollToPlans()">Change Plan</button>
+          <button class="btn-outline" style="border-color:rgba(220,50,50,0.4); color:#e05050;" onclick="cancelPlan()">Cancel Membership</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     PLAN CARDS
+════════════════════════════════════════════ -->
+<section class="plans-section" id="plans-section">
+  <div class="container">
+    <div class="section-label">Membership Plans</div>
+    <h2 class="section-title">Choose Your Level of Care</h2>
+    <p class="section-sub">Every plan includes our signature mobile detailing service delivered directly to your home or office. No hassle. No drive. Just a clean car.</p>
+
+    <div class="plans-grid">
+
+      <!-- Essential -->
+      <div class="plan-card" id="card-essential">
+        <div class="plan-tier">Tier 1</div>
+        <div class="plan-name">Essential</div>
+        <div class="plan-price">
+          <span class="amount">$75</span>
+          <span class="period">/ month</span>
+        </div>
+        <div class="plan-tagline">Perfect for maintaining a clean vehicle with a monthly refresh.</div>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+          <li>1 full detail per month</li>
+          <li>Exterior hand wash &amp; dry</li>
+          <li>Interior vacuum &amp; wipe-down</li>
+          <li>Window cleaning (inside + out)</li>
+          <li>Tire dressing &amp; wheel clean</li>
+          <li>Air freshener of choice</li>
+          <li class="note">Additional details available at member rate</li>
+        </ul>
+        <button class="plan-cta outline" id="cta-essential" onclick="selectPlan('essential')">Select Essential</button>
+      </div>
+
+      <!-- Premium (featured) -->
+      <div class="plan-card featured" id="card-premium">
+        <div class="plan-badge-top">Most Popular</div>
+        <div class="plan-tier">Tier 2</div>
+        <div class="plan-name">Premium</div>
+        <div class="plan-price">
+          <span class="amount">$125</span>
+          <span class="period">/ month</span>
+        </div>
+        <div class="plan-tagline">Twice the service, twice the shine — ideal for daily drivers.</div>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+          <li>2 full details per month</li>
+          <li>Everything in Essential</li>
+          <li>Clay bar treatment (1×/month)</li>
+          <li>Leather conditioning (if applicable)</li>
+          <li>Engine bay light clean</li>
+          <li>Odor elimination treatment</li>
+          <li class="note">Priority scheduling within 48 hours</li>
+        </ul>
+        <button class="plan-cta filled" id="cta-premium" onclick="selectPlan('premium')">Select Premium</button>
+      </div>
+
+      <!-- Elite -->
+      <div class="plan-card" id="card-elite">
+        <div class="plan-tier">Tier 3</div>
+        <div class="plan-name">Elite</div>
+        <div class="plan-price">
+          <span class="amount">$225</span>
+          <span class="period">/ month</span>
+        </div>
+        <div class="plan-tagline">Full-coverage protection program for ceramic-coated vehicles.</div>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+          <li>4 full details per month</li>
+          <li>Everything in Premium</li>
+          <li>Ceramic coating maintenance wash</li>
+          <li>Paint decontamination (monthly)</li>
+          <li>Hydrophobic sealant top-up</li>
+          <li>Dedicated detailer assignment</li>
+          <li>Complimentary interior deep-clean (quarterly)</li>
+          <li class="note">Requires verified ceramic coating (any reputable shop)</li>
+        </ul>
+        <button class="plan-cta outline" id="cta-elite" onclick="selectPlan('elite')">Select Elite</button>
+      </div>
+
+    </div>
+
+    <!-- Ceramic Coating Notice -->
+    <div class="ceramic-notice">
+      <div class="icon">🛡️</div>
+      <div>
+        <h4>Elite Plan — Ceramic Coating Requirement</h4>
+        <p>The Elite membership is designed to maintain and protect ceramic-coated vehicles. To qualify, your vehicle must have an existing ceramic coating applied by Reclaimed Detailers or another reputable detailing shop. When you select the Elite plan, you'll be asked to provide the shop name and approximate date of application. We may verify this before activating your plan.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     CERAMIC COATING MODAL
+════════════════════════════════════════════ -->
+<div id="elite-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); z-index:500; align-items:center; justify-content:center; padding:2rem;">
+  <div style="background:var(--bg-card); border:1px solid var(--border-gold); border-radius:16px; max-width:480px; width:100%; padding:2.5rem;">
+    <h3 style="font-family:'Playfair Display',serif; font-size:1.4rem; color:var(--text); margin-bottom:0.5rem;">Elite Plan Verification</h3>
+    <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:1.75rem; line-height:1.6;">Please provide your ceramic coating details so we can verify your eligibility for the Elite membership.</p>
+    <div style="display:flex; flex-direction:column; gap:1.25rem;">
+      <div class="auth-error" id="elite-error"></div>
+      <div class="form-group">
+        <label>Where was your ceramic coating applied?</label>
+        <input type="text" id="elite-shop" placeholder="e.g. Reclaimed Detailers, DriveClean Auto Spa..." required>
+      </div>
+      <div class="form-group">
+        <label>Approximate date applied</label>
+        <input type="month" id="elite-date" required>
+      </div>
+      <div class="form-group">
+        <label>Vehicle (Year / Make / Model)</label>
+        <input type="text" id="elite-vehicle" placeholder="e.g. 2021 Dodge Charger" required>
+      </div>
+      <div style="display:flex; gap:1rem;">
+        <button class="btn-outline" style="flex:1;" onclick="closeEliteModal()">Cancel</button>
+        <button class="btn-primary" style="flex:2;" onclick="confirmElite()">Submit &amp; Activate Elite</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     FAQ
+════════════════════════════════════════════ -->
+<section class="faq-section">
+  <div class="container">
+    <div class="section-label">Questions &amp; Answers</div>
+    <h2 class="section-title">Frequently Asked Questions</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span>How does the mobile detailing service work?</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="faq-answer"><p>We come directly to your home, workplace, or any preferred location. Once you're a member, you schedule each detail via phone, text, or email. Our team arrives with all equipment and supplies — you don't need to do a thing.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span>Can I roll over unused details to the next month?</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="faq-answer"><p>Details do not roll over between billing months. We encourage members to schedule early in the month to make the most of their plan. If you consistently can't use all your details, we'd recommend stepping down to a lower tier.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span>What if I need to cancel or change my plan?</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="faq-answer"><p>You can cancel or change your plan any time through your account dashboard. Changes take effect at the start of your next billing cycle. There are no cancellation fees or long-term contracts.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span>Does my vehicle need a ceramic coating to join the Elite plan?</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="faq-answer"><p>Yes — the Elite plan ($225/month) is specifically designed for ceramic-coated vehicles. The maintenance services included are formulated to protect and extend the life of professional ceramic coatings. If your vehicle doesn't have a coating yet, ask us about our Ceramic Coating service as a one-time add-on before enrolling in Elite.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span>Do you serve the entire Montgomery, AL area?</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="faq-answer"><p>Yes, we serve Montgomery and surrounding areas. Contact us at (334) 640-1831 to confirm service availability at your specific address. We're always expanding our coverage area.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════ -->
+<footer>
+  <div class="footer-logo">RECLAIMED DETAILERS</div>
+  <div class="footer-tagline">Restored. Refined. Reclaimed.</div>
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="about.html">About Us</a>
+    <a href="showcase.html">3D Showcase</a>
+    <a href="membership.html">Memberships</a>
+    <a href="index.html#contact">Contact</a>
+  </div>
+  <div class="footer-copy">&copy; 2025 Reclaimed Detailers LLC &nbsp;·&nbsp; Montgomery, AL &nbsp;·&nbsp; God First · Excellence Always</div>
+</footer>
+
+<script>
+// ── THEME ──
+(function(){
+  const saved = localStorage.getItem('rd-theme') || 'light';
+  document.documentElement.setAttribute('data-theme', saved);
+  const icon = document.getElementById('theme-icon');
+  const label = document.getElementById('theme-label');
+  if (icon && label) { icon.textContent = saved === 'dark' ? '🌙' : '☀️'; label.textContent = saved === 'dark' ? 'Dark' : 'Light'; }
+})();
+
+function toggleTheme() {
+  const curr = document.documentElement.getAttribute('data-theme');
+  const next = curr === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('rd-theme', next);
+  document.getElementById('theme-icon').textContent = next === 'dark' ? '🌙' : '☀️';
+  document.getElementById('theme-label').textContent = next === 'dark' ? 'Dark' : 'Light';
+}
+
+// ── SIDEBAR ──
+function toggleSidebar() {
+  const open = document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebar-overlay').classList.toggle('open', open);
+  document.getElementById('hamburger').classList.toggle('open', open);
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+}
+
+// ── SCROLL PROGRESS ──
+window.addEventListener('scroll', () => {
+  const doc = document.documentElement;
+  const pct = doc.scrollTop / (doc.scrollHeight - doc.clientHeight);
+  document.getElementById('page-indicator').style.transform = `scaleX(${pct})`;
+});
+
+// ── FAQ ──
+function toggleFaq(el) {
+  const item = el.closest('.faq-item');
+  item.classList.toggle('open');
+}
+
+// ── AUTH TABS ──
+function switchTab(tab) {
+  document.querySelectorAll('.auth-tab').forEach((t, i) => t.classList.toggle('active', (i === 0) === (tab === 'login')));
+  document.getElementById('login-form').classList.toggle('active', tab === 'login');
+  document.getElementById('register-form').classList.toggle('active', tab === 'register');
+}
+
+// ── SIMPLE localStorage AUTH ──
+function getUsers() { return JSON.parse(localStorage.getItem('rd-users') || '{}'); }
+function saveUsers(u) { localStorage.setItem('rd-users', JSON.stringify(u)); }
+function getCurrentUser() { return JSON.parse(localStorage.getItem('rd-current-user') || 'null'); }
+function setCurrentUser(u) { localStorage.setItem('rd-current-user', JSON.stringify(u)); }
+
+function handleLogin(e) {
+  e.preventDefault();
+  const email = document.getElementById('login-email').value.trim().toLowerCase();
+  const pass = document.getElementById('login-password').value;
+  const users = getUsers();
+  const errEl = document.getElementById('login-error');
+  if (!users[email] || users[email].password !== pass) {
+    errEl.textContent = 'Incorrect email or password. Please try again.';
+    errEl.classList.add('show'); return;
+  }
+  errEl.classList.remove('show');
+  setCurrentUser(users[email]);
+  showDashboard(users[email]);
+}
+
+function handleRegister(e) {
+  e.preventDefault();
+  const name = document.getElementById('reg-name').value.trim();
+  const email = document.getElementById('reg-email').value.trim().toLowerCase();
+  const phone = document.getElementById('reg-phone').value.trim();
+  const pass = document.getElementById('reg-password').value;
+  const users = getUsers();
+  const errEl = document.getElementById('register-error');
+  if (users[email]) { errEl.textContent = 'An account with this email already exists.'; errEl.classList.add('show'); return; }
+  errEl.classList.remove('show');
+  const newUser = { name, email, phone, password: pass, plan: null, joinDate: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) };
+  users[email] = newUser;
+  saveUsers(users);
+  setCurrentUser(newUser);
+  showDashboard(newUser);
+}
+
+function handleLogout() {
+  localStorage.removeItem('rd-current-user');
+  document.getElementById('auth-section').style.display = 'block';
+  document.getElementById('dashboard-section').classList.remove('visible');
+}
+
+// ── DASHBOARD ──
+const PLANS = {
+  essential: { label: 'Essential · $75/mo', details: 1, sub: '1 detail per month included' },
+  premium:   { label: 'Premium · $125/mo',  details: 2, sub: '2 details per month included' },
+  elite:     { label: 'Elite · $225/mo',    details: 4, sub: '4 details per month included' },
+};
+
+function showDashboard(user) {
+  document.getElementById('auth-section').style.display = 'none';
+  document.getElementById('dashboard-section').classList.add('visible');
+  document.getElementById('dash-name').textContent = user.name.split(' ')[0];
+  document.getElementById('dash-since').textContent = user.joinDate || '—';
+
+  const plan = user.plan;
+  if (plan && PLANS[plan]) {
+    const p = PLANS[plan];
+    document.getElementById('dash-plan-badge').textContent = p.label;
+    document.getElementById('dash-plan-sub').textContent = p.sub;
+    document.getElementById('dash-details-remaining').innerHTML = p.details + '<span class="unit">details</span>';
+    document.getElementById('dash-no-plan').style.display = 'none';
+    document.getElementById('dash-manage').style.display = 'block';
+    document.getElementById('manage-plan-name').textContent = p.label;
+  } else {
+    document.getElementById('dash-plan-badge').textContent = 'No Active Plan';
+    document.getElementById('dash-plan-sub').textContent = 'Browse plans below to get started.';
+    document.getElementById('dash-details-remaining').textContent = '—';
+    document.getElementById('dash-no-plan').style.display = 'block';
+    document.getElementById('dash-manage').style.display = 'none';
+  }
+  updatePlanButtons(plan);
+}
+
+function updatePlanButtons(activePlan) {
+  ['essential', 'premium', 'elite'].forEach(p => {
+    const btn = document.getElementById('cta-' + p);
+    if (!btn) return;
+    if (p === activePlan) {
+      btn.textContent = 'Current Plan ✓';
+      btn.className = 'plan-cta current-plan';
+    } else {
+      const labels = { essential: 'Select Essential', premium: 'Select Premium', elite: 'Select Elite' };
+      btn.textContent = labels[p];
+      btn.className = p === 'premium' ? 'plan-cta filled' : 'plan-cta outline';
+    }
+  });
+}
+
+function selectPlan(plan) {
+  const user = getCurrentUser();
+  if (!user) { document.getElementById('auth-section').scrollIntoView({ behavior: 'smooth' }); return; }
+  if (plan === 'elite') { document.getElementById('elite-modal').style.display = 'flex'; return; }
+  activatePlan(plan, user);
+}
+
+function activatePlan(plan, user) {
+  user.plan = plan;
+  const users = getUsers();
+  users[user.email] = user;
+  saveUsers(users);
+  setCurrentUser(user);
+  showDashboard(user);
+  document.getElementById('dashboard-section').scrollIntoView({ behavior: 'smooth' });
+}
+
+function cancelPlan() {
+  if (!confirm('Are you sure you want to cancel your membership? Changes take effect next billing cycle.')) return;
+  const user = getCurrentUser();
+  user.plan = null;
+  const users = getUsers();
+  users[user.email] = user;
+  saveUsers(users);
+  setCurrentUser(user);
+  showDashboard(user);
+}
+
+function scrollToPlans() {
+  document.getElementById('plans-section').scrollIntoView({ behavior: 'smooth' });
+}
+
+// ── ELITE MODAL ──
+function closeEliteModal() {
+  document.getElementById('elite-modal').style.display = 'none';
+}
+
+function confirmElite() {
+  const shop = document.getElementById('elite-shop').value.trim();
+  const date = document.getElementById('elite-date').value;
+  const vehicle = document.getElementById('elite-vehicle').value.trim();
+  const errEl = document.getElementById('elite-error');
+  if (!shop || !date || !vehicle) {
+    errEl.textContent = 'Please fill in all fields to verify your ceramic coating.';
+    errEl.classList.add('show'); return;
+  }
+  errEl.classList.remove('show');
+  const user = getCurrentUser();
+  user.ceramicShop = shop; user.ceramicDate = date; user.ceramicVehicle = vehicle;
+  closeEliteModal();
+  activatePlan('elite', user);
+}
+
+// ── INIT ──
+window.addEventListener('DOMContentLoaded', () => {
+  const user = getCurrentUser();
+  if (user) {
+    const fresh = getUsers()[user.email];
+    showDashboard(fresh || user);
+  }
+});
+</script>
+</body>
+</html>
