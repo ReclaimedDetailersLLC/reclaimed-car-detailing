@@ -32,9 +32,7 @@
       nav.classList.toggle('scrolled', y>40);
       if(top) nav.classList.toggle('over-hero', y < (top.offsetHeight - 120));
     }
-    var fb=document.getElementById('floatBook');
-    if(fb) fb.classList.toggle('show', y>700);
-  }
+}
   window.addEventListener('scroll',onScroll,{passive:true});onScroll();
 
   var d=document.getElementById('drawer'),s=document.getElementById('scrim');
