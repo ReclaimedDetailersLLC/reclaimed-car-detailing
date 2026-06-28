@@ -1,15 +1,15 @@
-# Reclaimed Detailers LLC — Project Guide for Claude
+# Aioneo Auto Detailing — Project Guide for Claude
 
 ## Business Overview
-- **Business Name:** Reclaimed Detailers LLC
+- **Business Name:** Aioneo Auto Detailing
 - **Tagline:** Restored. Refined. Reclaimed.
 - **Type:** Faith-driven mobile auto detailing business
 - **Location:** Elmore County, Alabama — based in Tallassee (mobile — no fixed shop address, never put address on site)
 - **Phone:** (334) 640-1831
-- **Email:** reclaimeddetailers@outlook.com
-- **Instagram:** @reclaimeddetailers
-- **Facebook:** /reclaimeddetailers
-- **TikTok:** @reclaimeddetailers
+- **Email:** aioneogroup@gmail.com
+- **Instagram:** @aioneodetailing
+- **Facebook:** /aioneodetailing
+- **TikTok:** @aioneodetailing
 - **Owner:** Ray Compton
 
 ## Mission & Brand Voice
@@ -101,7 +101,7 @@ font-family: 'Barlow Condensed', sans-serif; /* Labels, caps, nav links */
 - Privacy Policy: `privacy-policy.html` ✅
 - Terms & Conditions: `terms.html` ✅
 - Cookie consent banner: added to all pages ✅
-- Copyright: © 2026 Reclaimed Detailers LLC ✅
+- Copyright: © 2026 Aioneo Auto Detailing ✅
 - ADA: basic structure in place; needs real image alt text when photos are added
 
 ## Services Offered
